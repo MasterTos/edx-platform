@@ -28,6 +28,11 @@ LOG = logging.getLogger(__name__)
 # partition for Enrollment Track that uses ID 50, so we'll use 51.
 CONTENT_GATING_PARTITION_ID = 51
 
+CONTENT_TYPE_GATE_GROUP_IDS = {
+    'limited_access': 1,
+    'full_access': 2,
+}
+
 
 def create_content_gating_partition(course):
     """
@@ -79,8 +84,8 @@ class ContentTypeGatingPartitionScheme(object):
     the gated content despite not being verified users.
     """
 
-    LIMITED_ACCESS = Group(settings.CONTENT_TYPE_GATE_GROUP_IDS['limited_access'], 'Limited-access Users')
-    FULL_ACCESS = Group(settings.CONTENT_TYPE_GATE_GROUP_IDS['full_access'], 'Full-access Users')
+    LIMITED_ACCESS = Group(CONTENT_TYPE_GATE_GROUP_IDS['limited_access'], 'Limited-access Users')
+    FULL_ACCESS = Group(CONTENT_TYPE_GATE_GROUP_IDS['full_access'], 'Full-access Users')
 
     @classmethod
     def get_group_for_user(cls, course_key, user, user_partition, **kwargs):
