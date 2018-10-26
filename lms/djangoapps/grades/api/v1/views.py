@@ -582,7 +582,7 @@ class GradebookView(GradeViewMixin, GenericAPIView):
             return self.get_paginated_response(serializer.data)
 
 
-GradebookUpdateResponseItem = namedtuple('GradebookUpdateResponseItem', ['user_id', 'usage_id', 'success', 'reason'])
+GradebookUpdateResponseItem = namedtuple('GradebookUpdateResponseItem', ['user_id', 'usage_id', 'success', 'reason', 'grades'])
 
 
 class GradebookBulkUpdateView(GradeViewMixin, GenericAPIView):
@@ -698,7 +698,8 @@ class GradebookBulkUpdateView(GradeViewMixin, GenericAPIView):
                     user_id=requested_user_id,
                     usage_id=requested_usage_id,
                     success=False,
-                    reason=text_type(exc)
+                    reason=text_type(exc),
+                    grades=user_data['grade']
                 ))
                 continue
 
@@ -717,7 +718,8 @@ class GradebookBulkUpdateView(GradeViewMixin, GenericAPIView):
                         user_id=requested_user_id,
                         usage_id=requested_usage_id,
                         success=False,
-                        reason='usage_key {} does not exist in this course.'.format(usage_key)
+                        reason='usage_key {} does not exist in this course.'.format(usage_key),
+                        grades=user_data['grade']
                     ))
                     continue
 
@@ -727,7 +729,8 @@ class GradebookBulkUpdateView(GradeViewMixin, GenericAPIView):
                     user_id=user.id,
                     usage_id=text_type(usage_key),
                     success=True,
-                    reason=None
+                    reason=None,
+                    grades=user_data['grade']
                 ))
 
         status_code = status.HTTP_422_UNPROCESSABLE_ENTITY
