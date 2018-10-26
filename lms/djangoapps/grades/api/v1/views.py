@@ -735,7 +735,7 @@ class GradebookBulkUpdateView(GradeViewMixin, GenericAPIView):
             status_code = status.HTTP_202_ACCEPTED
 
         return Response(
-            json.dumps([item._asdict() for item in result]),
+            [item._asdict() for item in result],
             status=status_code,
             content_type='application/json'
         )
