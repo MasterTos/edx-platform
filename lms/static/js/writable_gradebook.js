@@ -16,25 +16,39 @@ function _templateLoader(templateName, staticPath, callback, errorCallback) {
 }
 
 function courseXblockUpdater(courseID, dataToSend, visibilityData, callback, errorCallback) {
-    var cleanData = {'users' : {}};
+    var cleanData = [];
 
-    if (dataToSend instanceof Array)
+    if (dataToSend instanceof Array) {
         for (var i = 0; i < dataToSend.length; i++) {
-            cleanData.users['id_' + dataToSend.userID] = {
-                'block_id' : dataToSend[i].blockID || '',
-                'grade' : dataToSend[i].grade || '',
-                'max_grade' : dataToSend[i].maxGrade || null,
-                'state' :  dataToSend[i].state || '{}',
-                'user_id' : dataToSend[i].userID || ''
-            };
+            cleanData.push({
+                user_id: dataToSend[i].userID,
+                usage_id: dataToSend[i].blockID,
+                grade: {
+                    earned_graded_override: dataToSend[i].grade,
+                    possible_graded_override: dataToSend[i].maxGrade
+                }
+            });
         }
-    else if (dataToSend instanceof Object)
-        cleanData.users = dataToSend;
+    }
+    else if (dataToSend instanceof Object) {
+        _.each(dataToSend, function(data, _){
+            cleanData.push({
+                user_id: data.user_id,
+                usage_id: data.block_id,
+                grade: {
+                    earned_all_override: data.grade,
+                    possible_all_override: data.max_grade,
+                    earned_graded_override: data.grade,
+                    possible_graded_override: data.max_grade
+                }
+            });
+        });
+    }
 
-    var postUrl = '/api/score/courses/' + courseID;
+    var postUrl = '/api/grades/v1/gradebook/' + courseID + '/bulk-update';
 
-    if (!_.isEmpty(visibilityData))
-        cleanData.visibility = visibilityData;
+    // if (!_.isEmpty(visibilityData))
+    //     cleanData.visibility = visibilityData;
 
     $.ajax({
         url: postUrl,
