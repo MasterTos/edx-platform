@@ -242,6 +242,7 @@ AUTHENTICATION_BACKENDS = [
     'third_party_auth.dummy.DummyBackend',
     'third_party_auth.saml.SAMLAuthBackend',
     'third_party_auth.lti.LTIAuthBackend',
+    'tuauth.backend.TUOAuth2',
 ] + AUTHENTICATION_BACKENDS
 
 THIRD_PARTY_AUTH_CUSTOM_AUTH_FORMS = {
